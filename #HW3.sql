@@ -1,0 +1,112 @@
+-- 1.1 Создание таблиц
+-- CREATE TABLE Faculty (
+--     id INT PRIMARY KEY,
+--     name VARCHAR(255) NOT NULL UNIQUE,
+--     foundation_year INT NOT NULL CHECK (foundation_year >= 1900)
+-- );
+-- 1.2
+-- CREATE TABLE Student (
+--     id INT PRIMARY KEY,
+--     full_name VARCHAR(255) NOT NULL,
+--     birth_date DATE NOT NULL,
+--     faculty_id INT,
+--     email VARCHAR(255) UNIQUE,
+--     FOREIGN KEY (faculty_id) REFERENCES Faculty(id)
+-- );
+-- 1.3
+-- CREATE TABLE Course (
+--     id INT PRIMARY KEY,
+--     name VARCHAR(255) NOT NULL,
+--     credits INT CHECK (credits >= 1 AND credits <= 10),
+--     faculty_id INT,
+--     FOREIGN KEY (faculty_id) REFERENCES Faculty(id)
+-- );
+-- 1.4
+-- CREATE TABLE Enrollment (
+--     id INT PRIMARY KEY,
+--     student_id INT,
+--     course_id INT,
+--     enroll_date DATE NOT NULL DEFAULT CURRENT_DATE,
+--     FOREIGN KEY (student_id) REFERENCES Student(id),
+--     FOREIGN KEY (course_id) REFERENCES Course(id)
+-- );
+-- 2. Заполнение таблиц
+-- INSERT INTO Faculty (id, name, foundation_year) VALUES
+-- (1, 'Факультет информационных технологий', 1995),
+-- (2, 'Экономический факультет', 1950),
+-- (3, 'Юридический факультет', 1961);
+
+-- INSERT INTO Student (id, full_name, birth_date, faculty_id, email) VALUES
+-- (1, 'Иванов Иван Иванович', '2003-05-10', 1, 'ivanov.i@gmail.com'),
+-- (2, 'Петров Петр Петрович', '2004-02-20', 1, 'petrov.p@gmail.com'),
+-- (3, 'Сидорова Анна Васильевна', '2003-09-15', 2, 'sidorova.a@gmail.com'),
+-- (4, 'Козлов Дмитрий Сергеевич', '2004-11-30', 2, 'kozlov.d@gmail.com'),
+-- (5, 'Смирнова Ольга Андреевна', '2002-07-21', 1, 'smirnova.o@gmail.com'),
+-- (6, 'Михайлов Артем Евгеньевич', '2003-01-12', 3, 'mikhailov.a@gmail.com');
+
+-- INSERT INTO Course (id, name, credits, faculty_id) VALUES
+-- (11, 'Основы программирования', 5, 1),
+-- (12, 'Базы данных', 4, 1),
+-- (21, 'Микроэкономика', 6, 2),
+-- (22, 'Бухгалтерский учет', 5, 2),
+-- (31, 'Теория государства и права', 7, 3);
+
+-- INSERT INTO Enrollment (id, student_id, course_id, enroll_date) VALUES
+-- (1, 1, 11, '2025-09-01'),
+-- (2, 1, 12, '2025-09-01'), 
+-- (3, 2, 11, '2025-09-01'),
+-- (4, 3, 21, '2025-09-01'),
+-- (5, 4, 21, '2025-09-01'),
+-- (6, 5, 11, '2025-09-01'), 
+-- (7, 6, 31, '2025-09-01');
+
+--4.1
+-- SELECT
+--     s.full_name,
+--     f.name AS faculty_name
+-- FROM
+--     Student s
+-- JOIN
+--     Faculty f ON s.faculty_id = f.id;
+--4.2
+-- SELECT
+--     c.name AS course_name,
+--     f.name AS faculty_name
+-- FROM
+--     Course c
+-- JOIN
+--     Faculty f ON c.faculty_id = f.id;
+--4.3
+-- SELECT
+--     s.full_name,
+--     c.name AS course_name
+-- FROM
+--     Enrollment e
+-- JOIN
+--     Student s ON e.student_id = s.id
+-- JOIN
+--     Course c ON e.course_id = c.id
+-- ORDER BY
+--     s.full_name;
+--4.4
+-- SELECT
+--     s.full_name
+-- FROM
+--     Enrollment e
+-- JOIN
+--     Student s ON e.student_id = s.id
+-- GROUP BY
+--     s.full_name
+-- HAVING
+--     COUNT(e.course_id) > 1;
+--4.5
+-- SELECT
+--     c.name AS course_name
+-- FROM
+--     Enrollment e
+-- JOIN
+--     Course c ON e.course_id = c.id
+-- GROUP BY
+--     c.name
+-- HAVING
+--     COUNT(e.student_id) > 2;
