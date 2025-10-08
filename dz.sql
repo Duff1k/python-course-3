@@ -75,3 +75,58 @@ INSERT INTO Enrollment (student_id, course_id, enroll_date) VALUES
 (4, 5, '2023-09-01'),
 (5, 4, '2023-09-01'),
 (6, 6, '2023-09-01');
+
+
+SELECT
+    s.id,
+    s.full_name,
+    s.birth_date,
+    s.email,
+    f.name as faculty_name
+FROM Student s
+JOIN Faculty f ON s.faculty_id = f.id
+ORDER BY s.id;
+
+
+SELECT
+    c.id,
+    c.name as course_name,
+    c.credits,
+    f.name as faculty_name
+FROM Course c
+JOIN Faculty f ON c.faculty_id = f.id
+ORDER BY c.id;
+
+
+SELECT
+    s.full_name as student_name,
+    f.name as faculty_name,
+    c.name as course_name,
+    e.enroll_date
+FROM Enrollment e
+JOIN Student s ON e.student_id = s.id
+JOIN Course c ON e.course_id = c.id
+JOIN Faculty f ON s.faculty_id = f.id
+ORDER BY s.full_name, c.name;
+
+
+SELECT
+    s.id,
+    s.full_name,
+    COUNT(e.course_id) as course_count
+FROM Student s
+JOIN Enrollment e ON s.id = e.student_id
+GROUP BY s.id, s.full_name
+HAVING COUNT(e.course_id) > 1
+ORDER BY course_count DESC;
+
+
+SELECT
+    c.id,
+    c.name as course_name,
+    COUNT(e.student_id) as student_count
+FROM Course c
+JOIN Enrollment e ON c.id = e.course_id
+GROUP BY c.id, c.name
+HAVING COUNT(e.student_id) > 2
+ORDER BY student_count DESC;
