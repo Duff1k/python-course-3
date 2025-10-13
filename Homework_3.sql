@@ -68,12 +68,12 @@ SELECT s.full_name, f.name
 FROM faculties f
 JOIN students s ON s.faculty_id = f.faculty_id;
 
--- Список курсов с указанием факультета
+-- Список курсов с указанием факультета:
 SELECT c.name, f.name
 FROM faculties f
 JOIN courses c ON c.faculty_id = f.faculty_id;
 
--- Список Студентов и курсов, на которые они зачислены
+-- Список Студентов и курсов, на которые они зачислены:
 SELECT
 	s.full_name AS student_name,
     c.name AS course_name
@@ -81,13 +81,13 @@ FROM enrollments e
 JOIN students s ON s.student_id = e.student_id
 JOIN courses c ON c.course_id = e.course_id;
 
--- Студенты, которые учатся более, чем на одном курсе
+-- Студенты, которые учатся более чем на одном курсе:
 SELECT s.full_name
 FROM enrollments e
 JOIN students s ON s.student_id = e.student_id
 GROUP BY s.full_name HAVING COUNT (e.course_id) > 1;
 
--- Курсы, на которых более 2-х студентов
+-- Курсы, на которых более 2-х студентов:
 SELECT c.name
 FROM enrollments e
 JOIN courses c ON c.course_id = e.course_id
