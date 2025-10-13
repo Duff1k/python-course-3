@@ -27,8 +27,7 @@ CREATE TABLE enrollment(
  course_id INTEGER REFERENCES course(course_id),
  enroll_date DATE NOT NULL DEFAULT CURRENT_DATE
 );
-2. Заполнение таблиц
-факультеты
+-- 2. Заполнение таблиц
 INSERT INTO faculty (name, foundation_year) VALUES 
 ('Кибернетики', 1969), 
 ('Математики', 1954), 
