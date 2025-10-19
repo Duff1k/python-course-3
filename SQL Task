@@ -1,0 +1,104 @@
+--Создание таблиц
+
+CREATE TABLE Faculty (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    foundation_year INTEGER NOT NULL CHECK (foundation_year >= 1900)
+);
+
+CREATE TABLE Student (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    full_name VARCHAR(255) NOT NULL,
+    birth_date DATE NOT NULL,
+    faculty_id INTEGER NOT NULL,
+    email VARCHAR(255) UNIQUE,
+	FOREIGN KEY (faculty_id) REFERENCES Faculty(id)
+);
+
+CREATE TABLE Course (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    credits INTEGER NOT NULL CHECK (credits BETWEEN 1 AND 10),
+    faculty_id INTEGER NOT NULL,
+	FOREIGN KEY (faculty_id) REFERENCES Faculty(id)
+);
+
+CREATE TABLE Enrollment (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    student_id INTEGER NOT NULL,
+    course_id INTEGER NOT NULL,
+    enroll_date DATE NOT NULL DEFAULT CURRENT_DATE,
+	FOREIGN KEY (student_id) REFERENCES Student(id),
+	FOREIGN KEY (course_id) REFERENCES Course(id),
+	UNIQUE (student_id, course_id)
+);
+
+--Заполнение таблиц
+
+INSERT INTO faculty (name, foundation_year) VALUES
+('Факультет математики', 1948),
+('Факультет физики', 1934),
+('Факультет статистики', 1956);
+
+INSERT INTO student (full_name, birth_date, faculty_id, email) VALUES
+('Иванов Иван Иванович', '1994-10-01', 1, 'ivanov@mail.ru'),
+('Максов Максим Максимович', '1995-04-03', 1, 'maksov.ru'),
+('Сидоров Сергей Иванович', '1996-05-05', 1, 'sidorov@mail.ru'),
+('Козлова Анна Владимировна', '1991-02-01', 2, 'kozlove@mail.ru'),
+('Смирнов Валерий Александрович', '1992-06-01', 2, 'cmirnov@mail.ru'),
+('Васильева Светлана Евгеньевна','1993-07-07', 3, 'vasilieva@mail.ru');
+
+INSERT INTO course (name, credits, faculty_id) VALUES
+('Высшая математика', 7, 1),
+('Линейная алгебра', 8, 1),
+('Механика', 9, 2),
+('Электродинамика', 5, 2),
+('Экономика', 6, 3);
+
+INSERT INTO enrollment (student_id, course_id, enroll_date) VALUES
+(1, 1, '2025-09-01 10:00:00'),
+(1, 2, '2025-09-02 11:00:00'),
+(2, 1, '2025-09-01 10:30:00'),
+(3, 2, '2025-09-03 12:00:00'),
+(4, 3, '2025-10-15 14:00:00'),
+(5, 3, '2025-10-16 15:00:00'),
+(5, 4, '2025-10-17 16:00:00'),
+(5, 2, '2025-10-17 17:00:00'),
+(6, 5, '2025-01-20 09:00:00');
+
+--Запросы
+--Вывести список всех студентов с названием факультета, на котором они учатся.
+(подсказка: JOIN Student s ON s.faculty_id = f.id)
+
+SELECT full_name, faculty.name
+FROM faculty
+JOIN student ON faculty_id = faculty.id
+
+--Вывести список курсов с указанием факультета, к которому они относятся.
+
+SELECT course.name, faculty.name
+FROM course
+JOIN faculty ON faculty_id = faculty.id
+
+--Вывести список студентов и курсов, на которые они зачислены.
+
+SELECT full_name, course.name
+FROM enrollment
+JOIN student ON student_id = student.id
+JOIN course ON course_id = course.id
+
+--Найти всех студентов, которые учатся более чем на одном курсе.
+
+SELECT full_name
+FROM student
+JOIN enrollment ON student.id = student_id
+GROUP BY full_name
+HAVING COUNT(course_id) > 1
+
+--Найти курсы, на которых учатся более 2 студентов.
+
+SELECT course.name
+FROM course
+JOIN enrollment ON course.id = enrollment.course_id
+GROUP BY course.name
+HAVING COUNT(student_id) > 2
