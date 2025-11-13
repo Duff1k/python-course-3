@@ -28,7 +28,6 @@ CREATE TABLE Enrollment (
     course_id INTEGER NOT NULL,
     enroll_date DATE NOT NULL DEFAULT CURRENT_DATE,
     FOREIGN KEY (student_id) REFERENCES Student(id),
-    FOREIGN KEY (course_id) REFERENCES Course(id),
     UNIQUE(student_id, course_id)
 );
 
@@ -129,4 +128,5 @@ FROM Course c
 JOIN Enrollment e ON c.id = e.course_id
 GROUP BY c.id, c.name
 HAVING COUNT(e.student_id) > 2
+
 ;
